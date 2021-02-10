@@ -1,17 +1,15 @@
 <template>
   <div id="app" class="w-full h-screen">
-    <Three />
+    <Map />
   </div>
 </template>
 
 <script>
-import Three from './components/Three'
+import Map from './components/Map'
 
 export default {
   name: 'App',
-  components: {
-    Three
-  }
+  components: { Map },
 }
 </script>
 
