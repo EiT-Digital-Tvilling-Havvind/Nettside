@@ -10,9 +10,7 @@
       @ready="onReady"
     >
       <l-tile-layer :url="mapUrl" />
-      <l-marker v-for="location in locations" :key="location[0]" :lat-lng="location">
-        <l-icon />
-      </l-marker>
+      <l-marker v-for="location in locations" :key="location[0]" :lat-lng="location" />
     </l-map>
   </div>
 </template>
