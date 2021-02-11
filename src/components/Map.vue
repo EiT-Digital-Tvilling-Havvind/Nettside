@@ -10,6 +10,9 @@
       @ready="onReady"
     >
       <l-tile-layer :url="mapUrl" />
+      <l-tile-layer v-for="(overlay, idx) in overlays" :key="idx" :url="overlay" />
+
+
       <l-marker v-for="location in locations" :key="location[0]" :lat-lng="location" />
     </l-map>
   </div>
@@ -19,7 +22,10 @@
 export default {
   components: {},
   data: () => ({
-    mapUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    // mapUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    mapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    overlays: [
+    ],
     zoom: 5,
     center: [ 63.446827, 10.421906 ],
     bounds: null,
