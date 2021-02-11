@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import { Icon } from 'leaflet';
@@ -16,6 +16,7 @@ Icon.Default.mergeOptions({
 Vue.component('l-map', LMap);
 Vue.component('l-tile-layer', LTileLayer);
 Vue.component('l-marker', LMarker);
+Vue.component('l-icon', LIcon);
 
 Vue.config.productionTip = false
 
