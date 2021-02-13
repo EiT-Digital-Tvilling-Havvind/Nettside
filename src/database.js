@@ -10,7 +10,7 @@ export default {
       last_service: {
         technician: 'Donald Duck',
         comment: 'Byttet slitt girkasse (GK115-Z2) i tårn, notert i vedlikeholdsmappe.',
-        timestamp: '2020-02-04T14:18:04+01:00',
+        timestamp: '2020-02-04T14:18:04.514Z',
       },
     },
     {
@@ -22,31 +22,31 @@ export default {
       last_service: {
         technician: 'Donald Duck',
         comment: 'Rutinesjekk, ingen problemer.',
-        timestamp: '2020-02-04T11:23:01+01:00',
+        timestamp: '2020-02-04T11:23:01.514Z',
       },
     },
     {
       name: 'EQ_144',
       latLng: [ 59.346670, 4.946131 ],
-      status: 'error',
+      status: 'maintenance',
       direction: 218,
       effect_mw: 0,
       last_service: {
         technician: 'Mikke Mus',
-        comment: 'Rutinesjekk, ingen problemer.',
-        timestamp: '2020-01-03T09:20:57+01:00',
+        comment: 'Rutinesjekk påbegynt.',
+        timestamp: (new Date()).toISOString(),
       },
     },
     {
       name: 'EQ_145',
       latLng: [ 59.356646, 4.924548 ],
-      status: 'maintenance',
+      status: 'error',
       direction: 0,
       effect_mw: 0,
       last_service: {
         technician: 'Petter Smart',
         comment: 'Rutinesjekk, ingen problemer.',
-        timestamp: '2020-01-012T11:36:12+01:00',
+        timestamp: '2020-01-012T11:36:12.514Z',
       },
     },
   ],

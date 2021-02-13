@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full">
-    <l-map 
+    <LMap 
       ref="map" 
       :zoom="zoom"
       :center="center"
@@ -8,14 +8,26 @@
       @update:center="updateCenter"
       @update:bounds="updateBounds"
     >
-      <l-tile-layer :url="mapUrl" />
-      <l-marker 
+      <LControlLayers position="topright" />
+      <LTileLayer 
+        :url="backgroundMap" 
+      />
+      <LTileLayer 
+        v-for="map in maps" 
+        :key="map.url" 
+        :name="map.name"
+        :visible="map.visible"
+        :url="map.url" 
+        :attribution="map.attribution"
+        layer-type="base"
+      />
+      <LMarker 
         v-for="turbine in turbines" 
         :key="turbine.name" 
         :lat-lng="turbine.latLng" 
         @click="markerClick(turbine)"
       >
-        <l-icon 
+        <LIcon 
           :icon-anchor="[0,0]"
         >
           <div class="relative w-10 h-10">
@@ -30,9 +42,9 @@
             />
           </div>
 
-        </l-icon>
-      </l-marker>
-    </l-map>
+        </LIcon>
+      </LMarker>
+    </LMap>
 
     <!-- Info pane -->
     <Modal :show="showModal" @close="showModal = false">
@@ -73,16 +85,48 @@
 </template>
 
 <script>
+import { LMap, LTileLayer, LMarker, LIcon, LControlLayers } from 'vue2-leaflet';
 import database from '../database'
 import Modal from './Modal'
 
 export default {
-  components: { Modal },
+  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers },
   data: () => ({
-    // mapUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    mapUrl: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    zoom: 5,
-    center: [ 63.446827, 10.421906 ],
+    backgroundMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    maps: [
+      {
+        name: 'OpenStreetMap',
+        visible: true, // default on
+        attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      },
+      {
+        name: 'OpenTopoMap',
+        visible: false, 
+        attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+        url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      },
+      {
+        name: 'Kartverket: Norgeskart bagrunn',
+        visible: false, 
+        attribution: '<a href="Kartverkethttp://www.statkart.no/">Kartverket</a>',
+        url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn&zoom={z}&x={x}&y={y}',
+      },
+      {
+        name: 'Kartverket: Havbunn grunnkart',
+        visible: false, 
+        attribution: '<a href="Kartverkethttp://www.statkart.no/">Kartverket</a>',
+        url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=havbunn_grunnkart&zoom={z}&x={x}&y={y}',
+      },
+      {
+        name: 'Kartverket: Stedsnavnskart',
+        visible: false, 
+        attribution: '<a href="Kartverkethttp://www.statkart.no/">Kartverket</a>',
+        url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster4&zoom={z}&x={x}&y={y}',
+      },
+    ],
+    zoom: 10,
+    center: [ 59.357346, 5.3098297 ],
     bounds: null,
     turbines: database.turbines,
     selectedTurbine: null,
@@ -97,7 +141,7 @@ export default {
           this.selectedTurbine = null
         }
       }
-    }
+    },
   },
   methods: {
     updateZoom(zoom) { this.zoom = zoom },
