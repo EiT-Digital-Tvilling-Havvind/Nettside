@@ -32,8 +32,8 @@
         >
           <div class="relative w-10 h-10">
             <img 
-              class="w-full h-full rounded-full ring-2 ring-gray-900"
-              src="https://i.imgur.com/fzfOlmq.png" 
+              class="w-full h-full rounded-full ring-2 ring-gray-900 bg-white"
+              :src="turbine.image" 
               alt=""
             >
             <div 
@@ -97,13 +97,13 @@ export default {
       {
         name: 'OpenStreetMap',
         visible: true, // default on
-        attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a>',
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       },
       {
         name: 'OpenTopoMap',
         visible: false, 
-        attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+        attribution: '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="http://viewfinderpanoramas.org">SRTM</a> | <a href="https://opentopomap.org">OpenTopoMap</a>',
         url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
       },
       {
@@ -148,7 +148,6 @@ export default {
     updateCenter(center) { this.center = center },
     updateBounds(bounds) { this.bounds = bounds },
     markerClick(turbine) {
-      console.log(turbine.name)
       this.selectedTurbine = turbine
     },
     statusColor(turbine) {

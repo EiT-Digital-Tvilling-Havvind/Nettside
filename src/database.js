@@ -4,6 +4,7 @@ export default {
     {
       name: 'EQ_142',
       latLng: [ 59.340193, 4.903874 ],
+      image: 'https://i.imgur.com/WjlyfAb.png',
       status: 'running',
       effect_mw: 3.4,
       direction: 288,
@@ -16,6 +17,7 @@ export default {
     {
       name: 'EQ_143',
       latLng: [ 59.343869, 4.929984 ],
+      image: 'https://i.imgur.com/fzfOlmq.png',
       status: 'running',
       direction: 270,
       effect_mw: 2.8,
@@ -28,6 +30,7 @@ export default {
     {
       name: 'EQ_144',
       latLng: [ 59.346670, 4.946131 ],
+      image: 'https://i.imgur.com/6b44yl7.jpg',
       status: 'maintenance',
       direction: 218,
       effect_mw: 0,
@@ -40,6 +43,7 @@ export default {
     {
       name: 'EQ_145',
       latLng: [ 59.356646, 4.924548 ],
+      image: 'https://i.imgur.com/Z0jJhS5.png',
       status: 'error',
       direction: 0,
       effect_mw: 0,
