@@ -13,13 +13,28 @@
         :url="backgroundMap" 
       />
       <LTileLayer 
-        v-for="map in maps" 
+        v-for="map in baseMaps" 
         :key="map.url" 
         :name="map.name"
         :visible="map.visible"
         :url="map.url" 
         :attribution="map.attribution"
         layer-type="base"
+      />
+      <LTileLayer 
+        v-for="map in overlayMaps" 
+        :key="map.url" 
+        :name="map.name"
+        :visible="map.visible"
+        :url="map.url" 
+        :attribution="map.attribution"
+        layer-type="overlay"
+      />
+      <LGeoJson 
+        :geojson="quadGeoJson"
+        :options="geoJsonOptions"
+        layer-type="overlay"
+        @click="clickGeoJson"
       />
       <LMarker 
         v-for="turbine in turbines" 
@@ -85,15 +100,17 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LIcon, LControlLayers } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, } from 'vue2-leaflet';
 import database from '../database'
 import Modal from './Modal'
 
+import quadAreas from '../quadAreas.geo.json'
+
 export default {
-  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers },
+  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, },
   data: () => ({
     backgroundMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    maps: [
+    baseMaps: [
       {
         name: 'OpenStreetMap',
         visible: true, // default on
@@ -125,11 +142,21 @@ export default {
         url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=toporaster4&zoom={z}&x={x}&y={y}',
       },
     ],
+    overlayMaps: [
+      // When we have some overlays to show here
+      // {
+      //   name: 'Kartverket: Norgeskart bagrunn',
+      //   visible: false, 
+      //   attribution: '<a href="Kartverkethttp://www.statkart.no/">Kartverket</a>',
+      //   url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn2&zoom={z}&x={x}&y={y}',
+      // },
+    ],
     zoom: 10,
     center: [ 59.357346, 5.3098297 ],
     bounds: null,
     turbines: database.turbines,
     selectedTurbine: null,
+    quadGeoJson: quadAreas,
   }),
   computed: {
     showModal: {
@@ -141,6 +168,9 @@ export default {
           this.selectedTurbine = null
         }
       }
+    },
+    geoJsonOptions() {
+      return  { onEachFeature: this.onEachFeatureCallback }
     },
   },
   methods: {
@@ -174,6 +204,26 @@ export default {
     closeModal() {
       this.showModal = false
     },
+    async fetchQuads() {
+      // Norsk petroleum: https://www.norskpetroleum.no/interaktivt-kart-og-arkiv/interaktivt-kart/
+      // Ligger masse geoJSON i Network-tabben, som vi gjerne kunne rendret 
+      // Disse må hentes serverside (kanskje bare en gang), og så serveres oss derfra
+      // på grunn av CORS.
+
+      const response = await fetch('https://www.norskpetroleum.no/factpages/mapv2_quadAreas.geo.json')
+      const body = response.json()
+      this.quadGeoJson = body
+
+    },
+    onEachFeatureCallback(feature, layer) {
+      layer.bindTooltip(
+        `<label>Quadrant ${feature.properties.name}</label>`,
+        { permanent: false, sticky: true }
+      )
+    },
+    clickGeoJson(event, a, b) {
+      console.log(event, a, b)
+    }
 
   },
   mounted() {
