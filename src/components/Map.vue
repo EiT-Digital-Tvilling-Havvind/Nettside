@@ -31,6 +31,8 @@
         layer-type="overlay"
       />
       <LGeoJson 
+        name="Quadrants"
+        :visible="false"
         :geojson="quadGeoJson"
         :options="geoJsonOptions"
         layer-type="overlay"
