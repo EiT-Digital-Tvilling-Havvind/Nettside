@@ -9,6 +9,7 @@
       @update:bounds="updateBounds"
     >
       <LControlLayers position="topright" />
+
       <LTileLayer 
         :url="backgroundMap" 
       />
@@ -21,6 +22,7 @@
         :attribution="map.attribution"
         layer-type="base"
       />
+      
       <LTileLayer 
         v-for="map in overlayMaps" 
         :key="map.url" 
@@ -30,22 +32,37 @@
         :attribution="map.attribution"
         layer-type="overlay"
       />
+
       <LGeoJson 
         name="Quadrants"
         :visible="false"
         :geojson="quadGeoJson"
-        :options="geoJsonOptions"
+        :options="geoJsonOptions('Quadrant')"
         layer-type="overlay"
         @click="clickGeoJson"
       />
+      <LGeoJson 
+        name="Blocks"
+        :visible="false"
+        :geojson="blockGeoJson"
+        :options="geoJsonOptions('Block')"
+        layer-type="overlay"
+        @click="clickGeoJson"
+      />
+
       <LMarker 
         v-for="turbine in turbines" 
         :key="turbine.name" 
         :lat-lng="turbine.latLng" 
         @click="markerClick(turbine)"
       >
+        <LTooltip
+          :content="turbine.name" 
+          :options="{ direction: 'top', sticky: true }"
+        />
         <LIcon 
-          :icon-anchor="[0,0]"
+          :icon-anchor="[20,20]"
+          :icon-size="[40, 40]"
         >
           <div class="relative w-10 h-10">
             <img 
@@ -102,14 +119,16 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } from 'vue2-leaflet';
 import database from '../database'
 import Modal from './Modal'
 
-import quadAreas from '../quadAreas.geo.json'
+// These files are LARGE. 
+import quadAreas from '../assets/json/quadAreas.geo.json' // 12 MB (595 334 lines)
+import blockAreas from '../assets/json/blockAreas.geo.json' // 37 MB (1 874 966 lines)
 
 export default {
-  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, },
+  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
   data: () => ({
     backgroundMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     baseMaps: [
@@ -159,6 +178,7 @@ export default {
     turbines: database.turbines,
     selectedTurbine: null,
     quadGeoJson: quadAreas,
+    blockGeoJson: blockAreas,
   }),
   computed: {
     showModal: {
@@ -170,9 +190,6 @@ export default {
           this.selectedTurbine = null
         }
       }
-    },
-    geoJsonOptions() {
-      return  { onEachFeature: this.onEachFeatureCallback }
     },
   },
   methods: {
@@ -217,11 +234,15 @@ export default {
       this.quadGeoJson = body
 
     },
-    onEachFeatureCallback(feature, layer) {
-      layer.bindTooltip(
-        `<label>Quadrant ${feature.properties.name}</label>`,
-        { permanent: false, sticky: true }
-      )
+    geoJsonOptions(type) {
+      return { 
+        onEachFeature: (feature, layer) => {
+          layer.bindTooltip(
+            `<label>${type} ${feature.properties.name}</label>`,
+            { permanent: false, sticky: true }
+          )
+        }
+      }
     },
     clickGeoJson(event, a, b) {
       console.log(event, a, b)
