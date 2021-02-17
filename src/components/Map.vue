@@ -81,54 +81,53 @@
     </LMap>
 
     <!-- Info pane -->
-    <Modal :show="showModal" @close="showModal = false">
-      <div class="w-96 rounded" v-if="selectedTurbine">
-        <h1 class="text-gray-700 font-semibold text-2xl">{{selectedTurbine.name}}</h1>
-        <hr class="border-gray-300 border my-2">
-        <p>
-          <span class="font-semibold text-gray-500">Current output: </span>
-          <span>{{selectedTurbine.effect_mw}} MW </span>
-        </p>
-        
-        <p>
-          <span class="font-semibold text-gray-500">Current direction: </span>
-          <span>{{selectedTurbine.direction}}&deg; {{cardinalDirection(selectedTurbine.direction)}}</span>
-        </p>
+    <Dialog 
+      v-if="showModal" 
+      @close="selectedTurbine = null"
+      :title="selectedTurbine.name"
+    >
+      <p>
+        <span class="font-semibold text-gray-500">Current output: </span>
+        <span>{{selectedTurbine.effect_mw}} MW </span>
+      </p>
+      
+      <p>
+        <span class="font-semibold text-gray-500">Current direction: </span>
+        <span>{{selectedTurbine.direction}}&deg; {{cardinalDirection(selectedTurbine.direction)}}</span>
+      </p>
 
-        <hr class="border-gray-300 my-2">
-        
-        <div v-if="selectedTurbine.last_service">
-          <p class="font-semibold text-gray-500">Last service: </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Technician: </span>
-            <span>{{selectedTurbine.last_service.technician}}</span>
-          </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Timestamp: </span>
-            <span>{{selectedTurbine.last_service.timestamp}}</span>
-          </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Comment: </span>
-            <span>{{selectedTurbine.last_service.comment}}</span>
-          </p>
-        </div>
-
+      <hr class="border-gray-300 my-2">
+      
+      <div v-if="selectedTurbine.last_service">
+        <p class="font-semibold text-gray-500">Last service: </p>
+        <p class="text-sm">
+          <span class="pl-2 font-semibold text-gray-500">Technician: </span>
+          <span>{{selectedTurbine.last_service.technician}}</span>
+        </p>
+        <p class="text-sm">
+          <span class="pl-2 font-semibold text-gray-500">Timestamp: </span>
+          <span>{{selectedTurbine.last_service.timestamp}}</span>
+        </p>
+        <p class="text-sm">
+          <span class="pl-2 font-semibold text-gray-500">Comment: </span>
+          <span>{{selectedTurbine.last_service.comment}}</span>
+        </p>
       </div>
-    </Modal>
+    </Dialog>
   </div>
 </template>
 
 <script>
 import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } from 'vue2-leaflet';
 import database from '../database'
-import Modal from './Modal'
+import Dialog from './Dialog'
 
 // These files are LARGE. 
 import quadAreas from '../assets/json/quadAreas.geo.json' // 12 MB (595 334 lines)
 import blockAreas from '../assets/json/blockAreas.geo.json' // 37 MB (1 874 966 lines)
 
 export default {
-  components: { Modal, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
+  components: { Dialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
   data: () => ({
     backgroundMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     baseMaps: [
@@ -244,12 +243,14 @@ export default {
         }
       }
     },
-    clickGeoJson(event, a, b) {
-      console.log(event, a, b)
+    clickGeoJson() {
+      // console.log(layer)
     }
 
   },
-  mounted() {
+  async mounted() {
+    // const data = await (await fetch('https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.340193&lon=4.903874')).json()
+    // console.log(data)
   },
   watch: {
   },
