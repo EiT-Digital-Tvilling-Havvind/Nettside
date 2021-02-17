@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="h-full">
     <LMap 
       ref="map" 
       :zoom="zoom"
@@ -39,7 +39,6 @@
         :geojson="quadGeoJson"
         :options="geoJsonOptions('Quadrant')"
         layer-type="overlay"
-        @click="clickGeoJson"
       />
       <LGeoJson 
         name="Blocks"
@@ -47,12 +46,11 @@
         :geojson="blockGeoJson"
         :options="geoJsonOptions('Block')"
         layer-type="overlay"
-        @click="clickGeoJson"
       />
 
       <LMarker 
         v-for="turbine in turbines" 
-        :key="turbine.name" 
+        :key="turbine.id" 
         :lat-lng="turbine.latLng" 
         @click="markerClick(turbine)"
       >
@@ -86,32 +84,42 @@
       @close="selectedTurbine = null"
       :title="selectedTurbine.name"
     >
-      <p>
-        <span class="font-semibold text-gray-500">Current output: </span>
-        <span>{{selectedTurbine.effect_mw}} MW </span>
-      </p>
-      
-      <p>
-        <span class="font-semibold text-gray-500">Current direction: </span>
-        <span>{{selectedTurbine.direction}}&deg; {{cardinalDirection(selectedTurbine.direction)}}</span>
-      </p>
+      <div class="relative w-full h-full">
+        <p>
+          <span class="font-semibold text-gray-500">Current output: </span>
+          <span>{{selectedTurbine.effect_mw}} MW </span>
+        </p>
+        
+        <p>
+          <span class="font-semibold text-gray-500">Current direction: </span>
+          <span>{{selectedTurbine.direction}}&deg; {{cardinalDirection(selectedTurbine.direction)}}</span>
+        </p>
 
-      <hr class="border-gray-300 my-2">
-      
-      <div v-if="selectedTurbine.last_service">
-        <p class="font-semibold text-gray-500">Last service: </p>
-        <p class="text-sm">
-          <span class="pl-2 font-semibold text-gray-500">Technician: </span>
-          <span>{{selectedTurbine.last_service.technician}}</span>
-        </p>
-        <p class="text-sm">
-          <span class="pl-2 font-semibold text-gray-500">Timestamp: </span>
-          <span>{{selectedTurbine.last_service.timestamp}}</span>
-        </p>
-        <p class="text-sm">
-          <span class="pl-2 font-semibold text-gray-500">Comment: </span>
-          <span>{{selectedTurbine.last_service.comment}}</span>
-        </p>
+        <hr class="border-gray-300 my-2">
+        
+        <div v-if="selectedTurbine.last_service">
+          <p class="font-semibold text-gray-500">Last service: </p>
+          <p class="text-sm">
+            <span class="pl-2 font-semibold text-gray-500">Technician: </span>
+            <span>{{selectedTurbine.last_service.technician}}</span>
+          </p>
+          <p class="text-sm">
+            <span class="pl-2 font-semibold text-gray-500">Timestamp: </span>
+            <span>{{selectedTurbine.last_service.timestamp}}</span>
+          </p>
+          <p class="text-sm">
+            <span class="pl-2 font-semibold text-gray-500">Comment: </span>
+            <span>{{selectedTurbine.last_service.comment}}</span>
+          </p>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <button 
+            class="p-2 rounded border-2 border-gray-300 bg-gray-100 hover:bg-gray-200 active:bg-blue-200 active:border-blue-300 focus:outline-none"
+            @click="$emit('openTurbineDetail', selectedTurbine.id)"
+          >
+            Show details
+          </button>
+        </div>
       </div>
     </Dialog>
   </div>
@@ -119,7 +127,6 @@
 
 <script>
 import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } from 'vue2-leaflet';
-import database from '../database'
 import Dialog from './Dialog'
 
 // These files are LARGE. 
@@ -128,6 +135,13 @@ import blockAreas from '../assets/json/blockAreas.geo.json' // 37 MB (1 874 966 
 
 export default {
   components: { Dialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
+  props: {
+    turbines: {
+      type: Array,
+      required: false,
+      default: () => [],
+    }
+  },
   data: () => ({
     backgroundMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     baseMaps: [
@@ -174,10 +188,10 @@ export default {
     zoom: 10,
     center: [ 59.357346, 5.3098297 ],
     bounds: null,
-    turbines: database.turbines,
     selectedTurbine: null,
     quadGeoJson: quadAreas,
     blockGeoJson: blockAreas,
+    fixMapSizeInterval: null,
   }),
   computed: {
     showModal: {
@@ -243,14 +257,16 @@ export default {
         }
       }
     },
-    clickGeoJson() {
-      // console.log(layer)
+    fixMapSize() {
+      this.$refs.map.mapObject.invalidateSize()
     }
 
   },
   async mounted() {
-    // const data = await (await fetch('https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.340193&lon=4.903874')).json()
-    // console.log(data)
+    this.fixMapSizeInterval = setInterval(this.fixMapSize, 200)
+  },
+  beforeDestroy() {
+    clearInterval(this.fixMapSizeInterval)
   },
   watch: {
   },

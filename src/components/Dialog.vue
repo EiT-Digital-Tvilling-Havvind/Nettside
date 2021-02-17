@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="bg-white min-w-min min-h-min rounded-lg absolute w-120 h-80 z-1000 transition-shadow duration-300"
+    class="bg-white min-w-min min-h-min rounded-lg absolute w-120 max-w-full z-1000 transition-shadow duration-300"
     :class="dragX === null ? 'shadow-md' : 'shadow-xl'"
     :style="positionStyle"
   >
@@ -12,6 +12,8 @@
       draggable
     >
       <h1 class="text-2xl py-2 px-4 text-gray-500 font-semibold">{{title}}</h1>
+      
+      <!-- Close button -->
       <div 
         class="absolute h-8 w-8 top-2 right-2 text-2xl hover:bg-gray-200 rounded-full cursor-pointer text-center"
         @click="$emit('close')"
@@ -85,6 +87,8 @@ export default {
       this.dragX = this.dragY = null
     },
     resizeHandler() {
+      this.width = this.$el.clientWidth
+      this.height = this.$el.clientHeight
       this.parentWidth = this.$el.parentElement.clientWidth
       this.parentHeight = this.$el.parentElement.clientHeight
       this.left = Math.min(Math.max(this.left, 0), this.parentWidth - this.width)

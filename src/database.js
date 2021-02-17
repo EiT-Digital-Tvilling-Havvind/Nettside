@@ -2,6 +2,7 @@
 export default {
   turbines: [
     {
+      id: 0,
       name: 'EQ_142',
       latLng: [ 59.340193, 4.903874 ],
       image: 'https://i.imgur.com/WjlyfAb.png',
@@ -15,6 +16,7 @@ export default {
       },
     },
     {
+      id: 1,
       name: 'EQ_143',
       latLng: [ 59.343869, 4.929984 ],
       image: 'https://i.imgur.com/fzfOlmq.png',
@@ -28,6 +30,7 @@ export default {
       },
     },
     {
+      id: 2,
       name: 'EQ_144',
       latLng: [ 59.346670, 4.946131 ],
       image: 'https://i.imgur.com/6b44yl7.jpg',
@@ -41,6 +44,7 @@ export default {
       },
     },
     {
+      id: 3,
       name: 'EQ_145',
       latLng: [ 59.356646, 4.924548 ],
       image: 'https://i.imgur.com/Z0jJhS5.png',
