@@ -98,17 +98,17 @@
         <hr class="border-gray-300 my-2">
         
         <div v-if="selectedTurbine.last_service">
-          <p class="font-semibold text-gray-500">Last service: </p>
+          <p class="font-semibold text-gray-500">Siste vedlikehold: </p>
           <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Technician: </span>
+            <span class="pl-2 font-semibold text-gray-500">Mekaniker: </span>
             <span>{{selectedTurbine.last_service.technician}}</span>
           </p>
           <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Timestamp: </span>
+            <span class="pl-2 font-semibold text-gray-500">Tidsstempel: </span>
             <span>{{selectedTurbine.last_service.timestamp}}</span>
           </p>
           <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Comment: </span>
+            <span class="pl-2 font-semibold text-gray-500">Kommentar: </span>
             <span>{{selectedTurbine.last_service.comment}}</span>
           </p>
         </div>
@@ -117,7 +117,7 @@
             class="p-2 rounded border-2 border-gray-300 bg-gray-100 hover:bg-gray-200 active:bg-blue-200 active:border-blue-300 focus:outline-none"
             @click="$emit('openTurbineDetail', selectedTurbine.id)"
           >
-            Show details
+            Vis detaljer
           </button>
         </div>
       </div>

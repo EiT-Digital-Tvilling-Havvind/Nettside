@@ -13,6 +13,8 @@
       >
         <TurbineDetail 
           :turbine="selectedTurbine"
+          :mechanics="mechanics"
+          :maintenances="turbineMaintenances"
           @close="closeDetail"
         />
       </div>
@@ -30,11 +32,21 @@ export default {
   components: { Map, TurbineDetail },
   data: () => ({
     turbines: database.turbines,
+    mechanics: database.mechanics,
+    maintenances: database.maintenances,
     selectedTurbineId: null,
   }),
   computed: {
     selectedTurbine() {
       return this.turbines.find(turb => turb.id === this.selectedTurbineId) ?? {}
+    },
+    turbineMaintenances() {
+      return this.maintenances
+        .filter(mt => mt.turbine_id === this.selectedTurbine.id)
+        .map(mt => ({
+          ...mt,
+          mechanic: this.mechanics.find(mech => mech.id === mt.mechanic_id)
+        }))
     },
     showDetail() {
       return this.selectedTurbineId !== null
