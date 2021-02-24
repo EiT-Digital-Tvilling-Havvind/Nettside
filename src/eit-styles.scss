@@ -1,0 +1,90 @@
+.eit-pill {
+  @apply text-white;
+  @apply text-2xs;
+  @apply font-bold;
+  @apply tracking-wider;
+  @apply px-2;
+  @apply py-1;
+  @apply uppercase;
+  @apply mr-2;
+  @apply rounded-full;
+}
+
+.eit-button {
+  @apply px-2;
+  @apply py-1.5;
+  @apply rounded;
+  @apply border-2;
+  @apply bg-gray-100;
+  @apply border-gray-300;
+
+  &:hover {
+    @apply bg-blue-100;
+    @apply border-blue-300;
+  }
+  &:active {
+    @apply bg-blue-200;
+    @apply border-blue-300;
+  }
+  &:focus {
+    @apply outline-none;
+  }
+
+
+  &.eit-button-green {
+    @apply bg-green-700;
+    @apply border-green-800;
+    @apply text-white;
+  
+    &:hover {
+      @apply bg-green-600;
+      @apply border-green-700;
+    }
+    &:active {
+      @apply bg-green-800;
+      @apply border-green-900;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+
+  &.eit-button-red {
+    @apply bg-red-700;
+    @apply border-red-800;
+    @apply text-white;
+  
+    &:hover {
+      @apply bg-red-600;
+      @apply border-red-700;
+    }
+    &:active {
+      @apply bg-red-800;
+      @apply border-red-900;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+
+}
+
+.eit-input {
+  @apply px-2;
+  @apply text-base;
+  @apply border-2;
+  @apply border-gray-400;
+  @apply rounded;
+}
+
+select.eit-input, 
+input.eit-input {
+  @apply h-9;
+}
+
+textarea.eit-input {
+  @apply py-1;
+}
+
+
+  

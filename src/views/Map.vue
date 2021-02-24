@@ -84,57 +84,22 @@
       @close="selectedTurbine = null"
       :title="selectedTurbine.name"
     >
-      <div class="relative w-full h-full">
-        <p>
-          <span class="font-semibold text-gray-500">Current output: </span>
-          <span>{{selectedTurbine.effect_mw}} MW </span>
-        </p>
-        
-        <p>
-          <span class="font-semibold text-gray-500">Current direction: </span>
-          <span>{{selectedTurbine.direction}}&deg; {{cardinalDirection(selectedTurbine.direction)}}</span>
-        </p>
-
-        <hr class="border-gray-300 my-2">
-        
-        <div v-if="selectedTurbine.last_service">
-          <p class="font-semibold text-gray-500">Siste vedlikehold: </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Mekaniker: </span>
-            <span>{{selectedTurbine.last_service.technician}}</span>
-          </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Tidsstempel: </span>
-            <span>{{selectedTurbine.last_service.timestamp}}</span>
-          </p>
-          <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Kommentar: </span>
-            <span>{{selectedTurbine.last_service.comment}}</span>
-          </p>
-        </div>
-        <div class="mt-4 flex justify-end">
-          <button 
-            class="p-2 rounded border-2 border-gray-300 bg-gray-100 hover:bg-gray-200 active:bg-blue-200 active:border-blue-300 focus:outline-none"
-            @click="$emit('openTurbineDetail', selectedTurbine.id)"
-          >
-            Vis detaljer
-          </button>
-        </div>
-      </div>
+      <TurbineDialog :turbine="selectedTurbine" @openTurbineDetail="openTurbineDetail" />
     </Dialog>
   </div>
 </template>
 
 <script>
 import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } from 'vue2-leaflet';
-import Dialog from './Dialog'
+import Dialog from '@/components/Dialog'
+import TurbineDialog from '@/views/TurbineDialog'
 
 // These files are LARGE. 
 import quadAreas from '../assets/json/quadAreas.geo.json' // 12 MB (595 334 lines)
 import blockAreas from '../assets/json/blockAreas.geo.json' // 37 MB (1 874 966 lines)
 
 export default {
-  components: { Dialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
+  components: { Dialog, TurbineDialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
   props: {
     turbines: {
       type: Array,
@@ -212,6 +177,9 @@ export default {
     markerClick(turbine) {
       this.selectedTurbine = turbine
     },
+    openTurbineDetail(turbineId) {
+      this.$emit('openTurbineDetail', turbineId)
+    },
     statusColor(turbine) {
       switch(turbine.status) {
         case 'running': 
@@ -221,17 +189,6 @@ export default {
         default:
           return 'yellow'
       }
-    },
-    cardinalDirection(degrees) {
-      if(degrees < 22.5 || degrees > 337.5) { return 'N' }
-      if(degrees <= 67.5)  { return 'NE' }
-      if(degrees <= 112.5) { return 'E' }
-      if(degrees <= 157.5) { return 'SE' }
-      if(degrees <= 202.5) { return 'S' }
-      if(degrees <= 247.5) { return 'SW' }
-      if(degrees <= 292.5) { return 'W' }
-      if(degrees <= 237.5) { return 'W' }
-      else { return '-' }
     },
     closeModal() {
       this.showModal = false

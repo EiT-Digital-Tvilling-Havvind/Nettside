@@ -149,7 +149,7 @@ export default {
       comment: 'Faktisk var det masse problemer denne gangen, har satt opp nytt vedlikehold med en mekaniker (Donald) som kan mye mer enn meg (Mikke). Merker at jeg var skikkelig underkvalifisert til dette.',
     },
     {
-      id: 7,
+      id: 8,
       turbine_id: 3,
       mechanic_id: 1,
       timestamp: '2020-02-12T11:25:00',

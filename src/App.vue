@@ -2,57 +2,41 @@
   <div id="app" class="w-full h-screen flex flex-row">
     <div class="flex-grow">
       <Map 
-        :turbines="turbines"
+        :turbines="getTurbines"
         @openTurbineDetail="openTurbineDetail"
       />
     </div>
-    <transition name="">
-      <div 
-        class="transition-all duration-100 border-gray-300 overflow-hidden"
-        :class="showDetail ? 'w-1/2 border-l-2' : 'w-0 border-l-0'"
-      >
-        <TurbineDetail 
-          :turbine="selectedTurbine"
-          :mechanics="mechanics"
-          :maintenances="turbineMaintenances"
-          @close="closeDetail"
-        />
-      </div>
-    </transition>
+    <div 
+      class="transition-all duration-100 border-gray-400 overflow-hidden"
+      :class="showDetail ? 'w-1/2 border-l-2' : 'w-0 border-l-0'"
+    >
+      <TurbineDetail 
+        :turbineId="selectedTurbineId"
+        @close="closeDetail"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import Map from './components/Map'
-import TurbineDetail from './components/TurbineDetail'
-import database from './database'
+import Map from '@/views/Map'
+import TurbineDetail from '@/views/TurbineDetail'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
   components: { Map, TurbineDetail },
   data: () => ({
-    turbines: database.turbines,
-    mechanics: database.mechanics,
-    maintenances: database.maintenances,
     selectedTurbineId: null,
   }),
   computed: {
-    selectedTurbine() {
-      return this.turbines.find(turb => turb.id === this.selectedTurbineId) ?? {}
-    },
-    turbineMaintenances() {
-      return this.maintenances
-        .filter(mt => mt.turbine_id === this.selectedTurbine.id)
-        .map(mt => ({
-          ...mt,
-          mechanic: this.mechanics.find(mech => mech.id === mt.mechanic_id)
-        }))
-    },
+    ...mapGetters([ 'getTurbines', 'getMaintenances', 'getMechanics' ]),
     showDetail() {
       return this.selectedTurbineId !== null
     }
   },
   methods: {
+    ...mapActions([ 'initialFetch' ]),
     openTurbineDetail(turbineId) {
       this.selectedTurbineId = turbineId
     },
@@ -61,6 +45,7 @@ export default {
     }
   },
   mounted() {
+    this.initialFetch()
   },
 }
 </script>
@@ -69,4 +54,6 @@ export default {
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
+
+  @import "@/eit-styles.scss";
 </style>
