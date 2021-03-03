@@ -94,10 +94,6 @@ import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } 
 import Dialog from '@/components/Dialog'
 import TurbineDialog from '@/views/TurbineDialog'
 
-// These files are LARGE. 
-import quadAreas from '../assets/json/quadAreas.geo.json' // 12 MB (595 334 lines)
-import blockAreas from '../assets/json/blockAreas.geo.json' // 37 MB (1 874 966 lines)
-
 export default {
   components: { Dialog, TurbineDialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
   props: {
@@ -154,8 +150,8 @@ export default {
     center: [ 59.357346, 5.3098297 ],
     bounds: null,
     selectedTurbine: null,
-    quadGeoJson: quadAreas,
-    blockGeoJson: blockAreas,
+    quadGeoJson: [],
+    blockGeoJson: [],
     fixMapSizeInterval: null,
   }),
   computed: {
@@ -193,15 +189,20 @@ export default {
     closeModal() {
       this.showModal = false
     },
-    async fetchQuads() {
+    async fetchQuadsAndBlocks() {
       // Norsk petroleum: https://www.norskpetroleum.no/interaktivt-kart-og-arkiv/interaktivt-kart/
       // Ligger masse geoJSON i Network-tabben, som vi gjerne kunne rendret 
       // Disse må hentes serverside (kanskje bare en gang), og så serveres oss derfra
       // på grunn av CORS.
+      // const response = await fetch('https://www.norskpetroleum.no/factpages/mapv2_quadAreas.geo.json')
 
-      const response = await fetch('https://www.norskpetroleum.no/factpages/mapv2_quadAreas.geo.json')
-      const body = response.json()
-      this.quadGeoJson = body
+      const quadResponse = await fetch('/json/quadAreas.geo.json')
+      const quadBody = await quadResponse.json()
+      this.quadGeoJson = quadBody
+
+      const blockResponse = await fetch('/json/blockAreas.geo.json')
+      const blockBody = await blockResponse.json()
+      this.quadGeoJson = blockBody
 
     },
     geoJsonOptions(type) {
@@ -220,6 +221,7 @@ export default {
 
   },
   async mounted() {
+    this.fetchQuadsAndBlocks()
     this.fixMapSizeInterval = setInterval(this.fixMapSize, 200)
   },
   beforeDestroy() {

@@ -46,7 +46,7 @@ export default {
     turbine: {
       type: Object,
       required: false,
-      default: {}
+      default: () => ({})
     }
   },
   data: () => ({
