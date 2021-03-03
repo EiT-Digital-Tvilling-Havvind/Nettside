@@ -8,71 +8,52 @@
       <span class="relative" style="bottom: 2px">&times;</span>
     </div>
     <div class="p-4 w-full h-full max-w-full overflow-auto flex flex-col">
-      <h1 class="text-3xl">Vindmølle {{turbine.name}}</h1>
+      <div class="flex items-end justify-start">
+        <h1 class="text-3xl">Vindmølle {{turbine.name}}</h1>
+        <h3 
+          class="ml-4 text-xl "
+          :class="turbine.effect_mw === 0 ? 'text-red-800' : 'text-gray-600'"
+        >
+          ({{`Effekt: ${turbine.effect_mw} MW`}})
+        </h3>
+      </div>
       <hr class="border-gray-200 my-4">
 
+      <!-- VEDLIKEHOLD -->
       <div class="flex justify-between">
         <h3 class="text-xl">Vedlikehold</h3>
         <button @click="showModal = true" class="eit-button text-xs">Opprett vedlikehold</button>
       </div>
       <div v-if="plannedMaintenances.length > 0">
         <h3 class="font-semibold text-gray-500 mt-4">Planlagt vedlikehold</h3>
-        <table class="table-fixed text-left w-full max-w-full bg-gray-100 rounded shadow-md mt-2">
-          <thead class="text-gray-500 uppercase tracking-wider text-sm">
-            <tr>
-              <th class="p-2 w-2/5 font-semibold" colspan="2">Oppgavebeskrivelse</th>
-              <th class="p-2 w-1/5 font-semibold">Tidsstempel</th>
-              <th class="p-2 w-2/5 font-semibold">Mekaniker</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="maintenance in plannedMaintenances" :key="maintenance.id" class="odd:bg-gray-50 hover:bg-blue-100 cursor-pointer" @click="openMaintenance(maintenance.id)">
-              <td class="p-2 truncate" colspan="2" :title="maintenance.task_description">
-                <span v-if="maintenance.preventive" class="bg-green-700 eit-pill" title="Preventivt vedlikehold" >Preventivt</span>
-                <span v-else-if="maintenance.fault_mode === 'Defekt'" class="bg-yellow-500 eit-pill" title="Defekt">Defekt</span>
-                <span v-else-if="maintenance.fault_mode === 'Svikt'" class="bg-red-700 eit-pill" title="Systemsvikt">Svikt</span>
-                <span v-else class="bg-gray-500 eit-pill" title="Ukjent">Ukjent</span>
-
-                <span>{{maintenance.task_description}}</span>
-              </td>
-              <td class="p-2 truncate">{{timestampToTimestring(maintenance.timestamp)}}</td>
-              <td class="p-2 truncate">{{maintenance.mechanic.name}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <MaintenanceTable 
+          :maintenances="plannedMaintenances"
+          @openMaintenance="openMaintenance"
+        />
       </div>
       <div v-if="completedMaintenances.length > 0">
         <h3 class="font-semibold text-gray-500 mt-4">Gjennomført vedlikehold</h3>
-        <table class="table-fixed text-left w-full max-w-full bg-gray-100 rounded shadow-md mt-2">
-          <thead class="text-gray-500 uppercase tracking-wider text-sm">
-            <tr>
-              <th class="p-2 w-2/5 font-semibold" colspan="2">Oppgavebeskrivelse</th>
-              <th class="p-2 w-1/5 font-semibold">Tidsstempel</th>
-              <th class="p-2 w-1/5 font-semibold">Mekaniker</th>
-              <th class="p-2 w-1/5 font-semibold">Kommentar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="maintenance in completedMaintenances" :key="maintenance.id" class="odd:bg-gray-50 hover:bg-blue-100 cursor-pointer" @click="openMaintenance(maintenance.id)">
-              <td class="p-2 truncate" colspan="2" :title="maintenance.task_description">
-                <span v-if="maintenance.preventive" class="bg-green-700 eit-pill" title="Preventivt vedlikehold" >Preventivt</span>
-                <span v-else-if="maintenance.fault_mode === 'Defekt'" class="bg-yellow-500 eit-pill" title="Defekt">Defekt</span>
-                <span v-else-if="maintenance.fault_mode === 'Svikt'" class="bg-red-700 eit-pill" title="Systemsvikt">Svikt</span>
-                <span v-else class="bg-gray-500 eit-pill" title="Ukjent">Ukjent</span>
-
-                <span class="truncate">{{maintenance.task_description}}</span>
-              </td>
-              <td class="p-2 truncate">{{timestampToTimestring(maintenance.timestamp)}}</td>
-              <td class="p-2 truncate">{{maintenance.mechanic.name}}</td>
-              <td class="p-2 truncate" :title="maintenance.comment">{{maintenance.comment || '-'}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <MaintenanceTable 
+          :maintenances="completedMaintenances"
+          @openMaintenance="openMaintenance"
+        />
       </div>
+
+      <hr class="border-gray-200 my-4">
+
+
+      <!-- KORROSJON -->
+      <div class="flex justify-between">
+        <h3 class="text-xl">Korrosjon</h3>
+      </div>
+      <div class="my-4">
+        <img class="h-72" src="../assets/corrosion_mockup.png">
+      </div>
+
 
     </div>
 
-
+    <!-- VEDLIKEHOLD REDIGERING -->
     <Modal :show="showModal" @close="closeModal">
       <MaintenanceForm 
         v-model="editMaintenance" 
@@ -87,10 +68,11 @@
 <script>
 import Modal from '@/components/Modal'
 import { mapActions, mapGetters } from 'vuex'
+import MaintenanceTable from './MaintenanceTable.vue'
 import MaintenanceForm from './MaintenanceForm.vue'
 
 export default {
-  components: { Modal, MaintenanceForm },
+  components: { Modal, MaintenanceTable, MaintenanceForm, },
   props: {
     turbineId: {
       type: Number,
@@ -123,20 +105,17 @@ export default {
           ...maintenance,
           mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.mechanic_id)
         }))
-        .sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
+        .sort((a, b) => a.timestamp < b.timestamp ? 1 : -1)
     },
     plannedMaintenances() {
-      return this.maintenances.filter(mt => mt.comment === null)
+      return this.maintenances.filter(mt => new Date(mt.timestamp) > new Date())
     },
     completedMaintenances() {
-      return this.maintenances.filter(mt => mt.comment !== null)
+      return this.maintenances.filter(mt => new Date(mt.timestamp) <= new Date())
     },
   },
   methods: {
     ...mapActions([ 'updateMaintenance', 'addMaintenance', 'removeMaintenance' ]),
-    timestampToTimestring(timestamp) {
-      return (new Date(timestamp)).toLocaleString()
-    },
     closeModal() {
       this.showModal = false
       this.editMaintenance = {

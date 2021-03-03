@@ -1,6 +1,6 @@
 <template>
-  <form class="grid grid-cols-2 max-w-120 w-full gap-2">
-    <h2 class="col-span-2 font-semibold text-gray-700 text-lg">{{isEditing ? 'Rediger' : 'Nytt'}} vedlikehold</h2>
+  <form class="grid grid-cols-3 w-120 gap-2">
+    <h2 class="col-span-3 font-semibold text-gray-700 text-lg">{{isEditing ? 'Rediger' : 'Nytt'}} vedlikehold</h2>
     <div class="flex flex-col">
       <label for="mechanic_id">Mekaniker</label>
       <select 
@@ -20,24 +20,16 @@
         class="eit-input"
       />
     </div>
-    <div class="col-span-2 flex flex-col">
-      <label for="task_description">Oppgavebeskrivelse</label>
-      <textarea 
-        v-model="maintenance.task_description"
-        name="task_description"
-        class="eit-input"
-        rows="3"
-      />
-    </div>
     <div class="flex flex-col">
-      <label for="preventive">Preventivt</label>
+      <label for="preventive">Vedlikeholdstype</label>
       <EitSwitch 
         v-model="maintenance.preventive"
+        :labels="{on: 'Forebyggende', off: 'Korrektivt'}"
         type="checkbox" name="preventive"
       />
     </div>
-    <div class="flex flex-col">
-      <label for="fault_mode">Feilmode</label>
+    <div class="flex flex-col col-span-3" :title="maintenance.preventive ? 'Feilmode er ikke relevant på forebyggende vedlikehold.' : ''">
+      <label for="fault_mode" :class="maintenance.preventive ? 'text-gray-500' : ''">Feilmode</label>
       <select 
         v-model="maintenance.fault_mode"
         :disabled="maintenance.preventive"
@@ -45,23 +37,27 @@
         class="eit-input"
       >
         <option :value="null">Ingen</option>
-        <option value="Defekt">Defekt</option>
-        <option value="Svikt">Svikt</option>
+        <optgroup v-for="(modeGroup, idx) in failureModes" :key="idx" :label="modeGroup.name">
+          <option v-for="mode in modeGroup.modes" :key="mode.id" :value="mode.id">{{mode.title}}</option>
+        </optgroup>
       </select>
     </div>
-    <div class="col-span-2 flex flex-col">
-      <label for="comment">Kommentar <span class="text-gray-400">(etter endt arbeid)</span></label>
+
+    <div class="flex flex-col col-span-3">
+      <label for="comment">Kommentar</label>
       <textarea 
         v-model="maintenance.comment"
         name="comment"
         class="eit-input"
-        rows="3"
+        rows="4"
+        style="height: 104px;"
       />
     </div>
-    <div class="flex justify-start">
+    
+    <div class="flex justify-start col-span-1">
       <button class="eit-button" @click.prevent="cancel">Avbryt</button>
     </div>
-    <div class="flex justify-end space-x-2">
+    <div class="flex justify-end space-x-2 col-span-2">
       <button class="eit-button eit-button-red" @click.prevent="destroy" v-if="isEditing">Slett</button>
       <button class="eit-button eit-button-green" @click.prevent="save">Lagre</button>
     </div>
@@ -69,6 +65,7 @@
 </template>
 
 <script>
+import failureModes from '@/failureModes'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -80,6 +77,7 @@ export default {
     }
   },
   data: () => ({
+    failureModes, 
     maintenance: {},
   }),
   computed: {
@@ -107,8 +105,11 @@ export default {
       deep: true,
       handler(newVal) {
         this.$emit('input', newVal)
+        if(newVal.preventive && newVal.fault_mode !== null) {
+          this.maintenance.fault_mode = null
+        }
       }
-    }
+    },
   },
 }
 </script>

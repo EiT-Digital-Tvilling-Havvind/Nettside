@@ -3,7 +3,7 @@
     v-if="show"
     class="absolute bg-black bg-opacity-30 inset-0 flex items-center justify-center"
     style="z-index: 10000;"
-    @click.self="close"
+    @mousedown.self="close"
   >
     <div class="bg-white min-w-min min-h-min rounded p-4">
       <slot />
@@ -26,7 +26,8 @@ export default {
 
   },
   methods: {
-    close() {
+    close(event) {
+      console.log(event)
       this.$emit('close')
     }
   },

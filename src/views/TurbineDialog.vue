@@ -20,7 +20,7 @@
           </p>
           <p class="text-sm">
             <span class="pl-2 font-semibold text-gray-500">Tidsstempel: </span>
-            <span>{{lastMaintenance.timestamp}}</span>
+            <span>{{timestampToTimestring(lastMaintenance.timestamp)}}</span>
           </p>
           <p class="text-sm" v-if="lastMaintenance.comment">
             <span class="pl-2 font-semibold text-gray-500">Kommentar: </span>
@@ -83,6 +83,9 @@ export default {
       if(degrees <= 292.5) { return 'W' }
       if(degrees <= 237.5) { return 'W' }
       else { return '-' }
+    },
+    timestampToTimestring(timestamp) {
+      return (new Date(timestamp)).toLocaleString()
     },
   },
   mounted() {
