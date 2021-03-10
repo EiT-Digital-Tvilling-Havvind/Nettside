@@ -24,6 +24,9 @@
         <h3 class="text-xl">Vedlikehold</h3>
         <button @click="showModal = true" class="eit-button text-xs">Opprett vedlikehold</button>
       </div>
+      <div v-if="!plannedMaintenances.length && !completedMaintenances.length">
+        <h3 class="font-semibold text-gray-400 mt-4">Det er ikke lagt inn noe vedlikehold for denne vindmøllen.</h3>
+      </div>
       <div v-if="plannedMaintenances.length > 0">
         <h3 class="font-semibold text-gray-500 mt-4">Planlagt vedlikehold</h3>
         <MaintenanceTable 
@@ -44,7 +47,7 @@
 
       <!-- KORROSJON -->
       <div class="flex justify-between">
-        <h3 class="text-xl">Korrosjon</h3>
+        <h3 class="text-xl">Korrosjon i splash-sona</h3>
       </div>
       <div class="my-4">
         <img class="h-72" src="../assets/corrosion_mockup.png">

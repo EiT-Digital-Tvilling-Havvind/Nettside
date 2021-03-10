@@ -28,8 +28,8 @@
         type="checkbox" name="preventive"
       />
     </div>
-    <div class="flex flex-col col-span-3" :title="maintenance.preventive ? 'Feilmode er ikke relevant på forebyggende vedlikehold.' : ''">
-      <label for="fault_mode" :class="maintenance.preventive ? 'text-gray-500' : ''">Feilmode</label>
+    <div class="flex flex-col col-span-3" :title="maintenance.preventive ? 'Sviktmodus er ikke relevant på forebyggende vedlikehold.' : ''">
+      <label for="fault_mode" :class="maintenance.preventive ? 'text-gray-500' : ''">Sviktmodus</label>
       <select 
         v-model="maintenance.fault_mode"
         :disabled="maintenance.preventive"
