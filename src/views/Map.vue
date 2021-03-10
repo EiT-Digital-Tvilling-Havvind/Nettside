@@ -1,18 +1,31 @@
 <template>
   <div class="h-full">
-    <LMap 
-      ref="map" 
-      :zoom="zoom"
-      :center="center"
-      @update:zoom="updateZoom"
-      @update:center="updateCenter"
-      @update:bounds="updateBounds"
-    >
+    <LMap ref="map" >
       <LControlLayers position="topright" />
+       <LControl position="topleft">
+        <div class="flex flex-col ring-2 ring-black ring-opacity-20 rounded-sm overflow-hidden" style="margin-left: 2px;">
+          <button 
+            class="p-0.5 bg-white focus:outline-none hover:bg-gray-100 active:bg-gray-200" 
+            style="height: 30px; width: 30px;"
+            title="Vis hele Norge"
+            @click="setBoundsNorway"
+          >
+            <img src="https://i.imgur.com/gGF1nRK.png">
+          </button>
+          <!-- <hr class="border-gray-300">
+          <button 
+            class="p-0.5 bg-white focus:outline-none hover:bg-gray-100 active:bg-gray-200" 
+            style="height: 30px; width: 30px;"
+            title="Vis hele Norge"
+            @click="setBoundsNorway"
+          >
+            <img src="https://i.imgur.com/gGF1nRK.png">
+          </button> -->
+        </div>
+      </LControl>
 
-      <LTileLayer 
-        :url="backgroundMap" 
-      />
+      <LTileLayer :url="backgroundMap" />
+      
       <LTileLayer 
         v-for="map in baseMaps" 
         :key="map.url" 
@@ -47,35 +60,41 @@
         :options="geoJsonOptions('Block')"
         layer-type="overlay"
       />
-
-      <LMarker 
-        v-for="turbine in turbines" 
-        :key="turbine.id" 
-        :lat-lng="turbine.latLng" 
-        @click="markerClick(turbine)"
+      <LMarkerCluster 
+        :options="{
+          iconCreateFunction: clusterDrawingFunction,
+          polygonOptions: { color: '#222' },
+        }"
       >
-        <LTooltip
-          :content="turbine.name" 
-          :options="{ direction: 'top', sticky: true }"
-        />
-        <LIcon 
-          :icon-anchor="[20,20]"
-          :icon-size="[40, 40]"
+        <LMarker 
+          v-for="turbine in turbines" 
+          :key="turbine.id" 
+          :lat-lng="turbine.latLng" 
+          @click="markerClick(turbine)"
         >
-          <div class="relative w-10 h-10">
-            <img 
-              class="w-full h-full rounded-full ring-2 ring-gray-900 bg-white"
-              :src="turbine.image" 
-              alt=""
-            >
-            <div 
-              class="rounded-full w-3 h-3 ring-2 ring-gray-900 absolute bottom-0 right-0" 
-              :style="`background-color: ${statusColor(turbine)};`"
-            />
-          </div>
+          <LTooltip
+            :content="turbine.name" 
+            :options="{ direction: 'top', sticky: true }"
+          />
+          <LIcon 
+            :icon-anchor="[20,20]"
+            :icon-size="[40, 40]"
+          >
+            <div class="relative w-10 h-10">
+              <img 
+                class="w-full h-full rounded-full ring-2 ring-gray-900 bg-white"
+                :src="turbine.image" 
+                alt=""
+              >
+              <div 
+                class="rounded-full w-3 h-3 ring-2 ring-gray-900 absolute bottom-0 right-0" 
+                :style="`background-color: ${statusColor(turbine)};`"
+              />
+            </div>
 
-        </LIcon>
-      </LMarker>
+          </LIcon>
+        </LMarker>
+      </LMarkerCluster>
     </LMap>
 
     <!-- Info pane -->
@@ -90,12 +109,14 @@
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LIcon, LControlLayers, LControl, LGeoJson, LTooltip } from 'vue2-leaflet';
+import L from 'leaflet'
+import LMarkerCluster from 'vue2-leaflet-markercluster'
 import Dialog from '@/components/Dialog'
 import TurbineDialog from '@/views/TurbineDialog'
 
 export default {
-  components: { Dialog, TurbineDialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LGeoJson, LTooltip },
+  components: { Dialog, TurbineDialog, LMap, LTileLayer, LMarker, LIcon, LControlLayers, LControl, LGeoJson, LTooltip, LMarkerCluster },
   props: {
     turbines: {
       type: Array,
@@ -146,9 +167,6 @@ export default {
       //   url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norgeskart_bakgrunn2&zoom={z}&x={x}&y={y}',
       // },
     ],
-    zoom: 10,
-    center: [ 59.357346, 5.3098297 ],
-    bounds: null,
     selectedTurbine: null,
     quadGeoJson: [],
     blockGeoJson: [],
@@ -167,9 +185,6 @@ export default {
     },
   },
   methods: {
-    updateZoom(zoom) { this.zoom = zoom },
-    updateCenter(center) { this.center = center },
-    updateBounds(bounds) { this.bounds = bounds },
     markerClick(turbine) {
       this.selectedTurbine = turbine
     },
@@ -217,12 +232,38 @@ export default {
     },
     fixMapSize() {
       this.$refs.map.mapObject.invalidateSize()
-    }
+    },
+    clusterDrawingFunction(cluster) {
+      const childCount = cluster.getChildCount();
+      return new L.DivIcon({ html: `<div><span>${childCount}</span></div>`, className: 'marker-cluster eit-marker-cluster' , iconSize: new L.Point(40, 40) });
+    },
+    focusAroundAllMarkers() {
+      const minLatLong = [ 90,  180]
+      const maxLatLong = [-90, -180]
+
+      for (const turbine of this.turbines) {
+        console.log(turbine, this.turbines, minLatLong)
+        minLatLong[0] = Math.min(turbine.latLng[0], minLatLong[0])
+        minLatLong[1] = Math.min(turbine.latLng[1], minLatLong[1])
+        
+        maxLatLong[0] = Math.max(turbine.latLng[0], maxLatLong[0])
+        maxLatLong[1] = Math.max(turbine.latLng[1], maxLatLong[1])
+      }
+
+      this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])
+    },
+    setBoundsNorway() {
+      const minLatLong = [57.961503, 3.985399]
+      const maxLatLong = [71.371109,31.810323]
+      this.bounds = [minLatLong, maxLatLong]
+      // this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])
+    },
 
   },
   async mounted() {
     this.fetchQuadsAndBlocks()
     this.fixMapSizeInterval = setInterval(this.fixMapSize, 200)
+    this.focusAroundAllMarkers()
   },
   beforeDestroy() {
     clearInterval(this.fixMapSizeInterval)
@@ -232,5 +273,20 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  .eit-marker-cluster {
+    @apply bg-gray-700;
+    @apply ring-gray-500;
+    @apply ring-8;
+    @apply ring-opacity-30;
+    @apply text-white;
+
+    & div span {
+      font-size: 1.25rem!important;
+      @apply font-semibold;
+    }
+  }
+
+  @import "~leaflet.markercluster/dist/MarkerCluster.css";
+  @import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 </style>
