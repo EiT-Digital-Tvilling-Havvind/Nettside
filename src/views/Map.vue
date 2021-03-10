@@ -238,11 +238,14 @@ export default {
       return new L.DivIcon({ html: `<div><span>${childCount}</span></div>`, className: 'marker-cluster eit-marker-cluster' , iconSize: new L.Point(40, 40) });
     },
     focusAroundAllMarkers() {
+      if(this.turbines.length === 0) {
+        return this.setBoundsNorway()
+      }
+
       const minLatLong = [ 90,  180]
       const maxLatLong = [-90, -180]
 
       for (const turbine of this.turbines) {
-        console.log(turbine, this.turbines, minLatLong)
         minLatLong[0] = Math.min(turbine.latLng[0], minLatLong[0])
         minLatLong[1] = Math.min(turbine.latLng[1], minLatLong[1])
         
@@ -255,8 +258,7 @@ export default {
     setBoundsNorway() {
       const minLatLong = [57.961503, 3.985399]
       const maxLatLong = [71.371109,31.810323]
-      this.bounds = [minLatLong, maxLatLong]
-      // this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])
+      this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])
     },
 
   },
@@ -269,6 +271,14 @@ export default {
     clearInterval(this.fixMapSizeInterval)
   },
   watch: {
+    turbines: {
+      deep: true,
+      handler: function (newVal, oldVal) {
+        if(newVal.length) {
+          this.focusAroundAllMarkers()
+        }
+      }
+    }
   },
 }
 </script>
