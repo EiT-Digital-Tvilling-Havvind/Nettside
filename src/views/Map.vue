@@ -82,9 +82,13 @@
           >
             <div class="relative w-10 h-10">
               <img 
+                class="absolute -z-1 -inset-3 h-16 w-16 pointer-events-none"
+                :style="`transform: rotate(${turbine.windFromDirection || 0}deg) scaleX(0.8);`"
+                src="../assets/arrow.png" 
+              >
+              <img 
                 class="w-full h-full rounded-full ring-2 ring-gray-900 bg-white"
                 :src="turbine.image" 
-                alt=""
               >
               <div 
                 class="rounded-full w-3 h-3 ring-2 ring-gray-900 absolute bottom-0 right-0" 

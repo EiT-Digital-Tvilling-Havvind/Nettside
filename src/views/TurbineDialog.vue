@@ -7,7 +7,7 @@
         
         <p>
           <span class="font-semibold text-gray-500">Nåværende retning: </span>
-          <span>{{turbine.direction || 0}}&deg; {{cardinalDirection(turbine.direction)}}</span>
+          <span>{{turbine.windFromDirection || 0}}&deg; {{cardinalDirection(turbine.windFromDirection)}}</span>
         </p>
 
         <hr class="border-gray-300 my-2">

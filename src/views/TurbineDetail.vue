@@ -21,7 +21,7 @@
 
       <!-- VEDLIKEHOLD -->
       <div class="flex justify-between">
-        <h3 class="text-xl">Vedlikehold</h3>
+        <h3 class="text-xl">Vedlikeholdsstyring</h3>
         <button @click="showModal = true" class="eit-button text-xs">Opprett vedlikehold</button>
       </div>
       <div v-if="!plannedMaintenances.length && !completedMaintenances.length">
@@ -47,10 +47,10 @@
 
       <!-- KORROSJON -->
       <div class="flex justify-between">
-        <h3 class="text-xl">Korrosjon i splash-sona</h3>
+        <h3 class="text-xl">Korrosjon i skvalpsona</h3>
       </div>
       <div class="my-4">
-        <img class="h-72" src="../assets/corrosion_mockup.png">
+        <CorrosionModel :upper="turbine.splashZoneUpper" :lower="turbine.splashZoneLower"/>
       </div>
 
 
@@ -73,9 +73,10 @@ import Modal from '@/components/Modal'
 import { mapActions, mapGetters } from 'vuex'
 import MaintenanceTable from './MaintenanceTable.vue'
 import MaintenanceForm from './MaintenanceForm.vue'
+import CorrosionModel from '../components/CorrosionModel'
 
 export default {
-  components: { Modal, MaintenanceTable, MaintenanceForm, },
+  components: { Modal, MaintenanceTable, MaintenanceForm, CorrosionModel, },
   props: {
     turbineId: {
       type: Number,
