@@ -69,7 +69,7 @@
         <LMarker 
           v-for="turbine in turbines" 
           :key="turbine.id" 
-          :lat-lng="turbine.latLng" 
+          :lat-lng="[turbine.coordsLat, turbine.coordsLong]" 
           @click="markerClick(turbine)"
         >
           <LTooltip
@@ -246,16 +246,17 @@ export default {
       const maxLatLong = [-90, -180]
 
       for (const turbine of this.turbines) {
-        minLatLong[0] = Math.min(turbine.latLng[0], minLatLong[0])
-        minLatLong[1] = Math.min(turbine.latLng[1], minLatLong[1])
+        minLatLong[0] = Math.min(turbine.coordsLat, minLatLong[0])
+        minLatLong[1] = Math.min(turbine.coordsLong, minLatLong[1])
         
-        maxLatLong[0] = Math.max(turbine.latLng[0], maxLatLong[0])
-        maxLatLong[1] = Math.max(turbine.latLng[1], maxLatLong[1])
+        maxLatLong[0] = Math.max(turbine.coordsLat, maxLatLong[0])
+        maxLatLong[1] = Math.max(turbine.coordsLong, maxLatLong[1])
       }
 
       this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])
     },
     setBoundsNorway() {
+      // these coordinates are for norway. 
       const minLatLong = [57.961503, 3.985399]
       const maxLatLong = [71.371109,31.810323]
       this.$refs.map.mapObject.fitBounds([minLatLong, maxLatLong])

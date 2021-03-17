@@ -26,8 +26,7 @@ export default {
 
   },
   methods: {
-    close(event) {
-      console.log(event)
+    close() {
       this.$emit('close')
     }
   },

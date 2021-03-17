@@ -2,28 +2,28 @@
   <div class="relative w-full h-full">
         <p>
           <span class="font-semibold text-gray-500">Nåværende effekt: </span>
-          <span>{{turbine.effect_mw}} MW </span>
+          <span>{{turbine.effect_mw || 0}} MW </span>
         </p>
         
         <p>
           <span class="font-semibold text-gray-500">Nåværende retning: </span>
-          <span>{{turbine.direction}}&deg; {{cardinalDirection(turbine.direction)}}</span>
+          <span>{{turbine.direction || 0}}&deg; {{cardinalDirection(turbine.direction)}}</span>
         </p>
 
         <hr class="border-gray-300 my-2">
         
         <div v-if="lastMaintenance !== null">
-          <p class="font-semibold text-gray-500">Siste vedlikehold: </p>
+          <p class="font-semibold text-gray-500">Siste vedlikehold</p>
           <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Mekaniker: </span>
+            <span class="font-semibold text-gray-500">Mekaniker: </span>
             <span>{{lastMaintenance.mechanic ? lastMaintenance.mechanic.name : '-' }}</span>
           </p>
           <p class="text-sm">
-            <span class="pl-2 font-semibold text-gray-500">Tidsstempel: </span>
-            <span>{{timestampToTimestring(lastMaintenance.timestamp)}}</span>
+            <span class="font-semibold text-gray-500">Tidsstempel: </span>
+            <span>{{timestampToTimestring(lastMaintenance.date)}}</span>
           </p>
           <p class="text-sm" v-if="lastMaintenance.comment">
-            <span class="pl-2 font-semibold text-gray-500">Kommentar: </span>
+            <span class="font-semibold text-gray-500">Kommentar: </span>
             <span>{{lastMaintenance.comment}}</span>
           </p>
         </div>
@@ -55,20 +55,13 @@ export default {
   computed: {
     ...mapGetters([ 'getMaintenances', 'getMechanics', ]),
     lastMaintenance() {
-      console.log(this.getMaintenances
-        .filter(maintenance => maintenance.turbine_id === this.turbine.id)
-        .map(maintenance => ({
-          ...maintenance,
-          mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.mechanic_id)
-        }))
-        .sort((a, b) => a.timestamp > b.timestamp ? 1 : -1))
       return this.getMaintenances
-        .filter(maintenance => maintenance.turbine_id === this.turbine.id)
+        .filter(maintenance => maintenance.windmillId === this.turbine.id)
         .map(maintenance => ({
           ...maintenance,
-          mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.mechanic_id)
+          mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.peopleId)
         }))
-        .sort((a, b) => a.timestamp > b.timestamp ? 1 : -1)
+        .sort((a, b) => a.date > b.date ? 1 : -1)
         .find(() => true) || null // get the first element that matches the stuff above here or return null
     },
   },
@@ -84,8 +77,8 @@ export default {
       if(degrees <= 237.5) { return 'W' }
       else { return '-' }
     },
-    timestampToTimestring(timestamp) {
-      return (new Date(timestamp)).toLocaleString()
+    timestampToTimestring(date) {
+      return (new Date(date)).toLocaleString()
     },
   },
   mounted() {

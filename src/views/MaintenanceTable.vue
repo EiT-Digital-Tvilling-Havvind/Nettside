@@ -12,9 +12,9 @@
       <tr v-for="maintenance in maintenances" :key="maintenance.id" class="odd:bg-gray-50 hover:bg-blue-100 cursor-pointer" @click="openMaintenance(maintenance.id)">
         <td class="p-2 truncate" :title="maintenance.task_description">
           <span v-if="maintenance.preventive">Forebyggende vedlikehold</span>
-          <span v-else>{{getFailureMode(maintenance.fault_mode)}}</span>
+          <span v-else>{{getFailureMode(maintenance.faultMode)}}</span>
         </td>
-        <td class="p-2 truncate">{{timestampToTimestring(maintenance.timestamp)}}</td>
+        <td class="p-2 truncate">{{timestampToTimestring(maintenance.date)}}</td>
         <td class="p-2 truncate">{{maintenance.mechanic.name}}</td>
         <td class="p-2 truncate" :title="maintenance.comment">{{maintenance.comment}}</td>
       </tr>
@@ -42,8 +42,8 @@ export default {
     openMaintenance(id) {
       this.$emit('openMaintenance', id)
     },
-    timestampToTimestring(timestamp) {
-      return (new Date(timestamp)).toLocaleString()
+    timestampToTimestring(date) {
+      return (new Date(date)).toLocaleString()
     },
     getFailureMode(failureModeKey) {
       const group_id = failureModeKey.split('.')[0]

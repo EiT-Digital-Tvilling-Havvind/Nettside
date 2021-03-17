@@ -12,9 +12,9 @@
         <h1 class="text-3xl">Vindmølle {{turbine.name}}</h1>
         <h3 
           class="ml-4 text-xl "
-          :class="turbine.effect_mw === 0 ? 'text-red-800' : 'text-gray-600'"
+          :class="!turbine.effect_mw ? 'text-red-700' : 'text-gray-600'"
         >
-          ({{`Effekt: ${turbine.effect_mw} MW`}})
+          (Effekt: {{turbine.effect_mw || 0}} MW)
         </h3>
       </div>
       <hr class="border-gray-200 my-4">
@@ -87,12 +87,11 @@ export default {
     showModal: false,
     editMaintenance: {
       id: null,
-      turbine_id: null,
-      mechanic_id: null,
-      timestamp: null,
+      windmillId: null,
+      peopleId: null,
+      date: null,
       preventive: false,
-      fault_mode: null,
-      task_description: null,
+      faultMode: null,
       comment: null,
     },
   }),
@@ -103,18 +102,18 @@ export default {
     },
     maintenances() {
       return this.getMaintenances
-        .filter(maintenance => maintenance.turbine_id === this.turbineId)
+        .filter(maintenance => maintenance.windmillId === this.turbineId)
         .map(maintenance => ({
           ...maintenance,
-          mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.mechanic_id)
+          mechanic: this.getMechanics.find(mechanic => mechanic.id === maintenance.peopleId)
         }))
-        .sort((a, b) => a.timestamp < b.timestamp ? 1 : -1)
+        .sort((a, b) => a.date < b.date ? 1 : -1)
     },
     plannedMaintenances() {
-      return this.maintenances.filter(mt => new Date(mt.timestamp) > new Date())
+      return this.maintenances.filter(mt => new Date(mt.date) > new Date())
     },
     completedMaintenances() {
-      return this.maintenances.filter(mt => new Date(mt.timestamp) <= new Date())
+      return this.maintenances.filter(mt => new Date(mt.date) <= new Date())
     },
   },
   methods: {
@@ -123,12 +122,11 @@ export default {
       this.showModal = false
       this.editMaintenance = {
         id: null,
-        turbine_id: null,
-        mechanic_id: null,
-        timestamp: null,
+        windmillId: null,
+        peopleId: null,
+        date: null,
         preventive: false,
-        fault_mode: null,
-        task_description: null,
+        faultMode: null,
         comment: null,
       }
     },
@@ -138,7 +136,7 @@ export default {
       this.showModal = true
     },
     async saveMaintenance() {
-      this.editMaintenance.turbine_id = this.turbineId
+      this.editMaintenance.windmillId = this.turbineId
       // if editing (not creating)
       if(this.editMaintenance.id !== null) {
         await this.updateMaintenance(this.editMaintenance)

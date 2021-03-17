@@ -2,10 +2,10 @@
   <form class="grid grid-cols-3 w-120 gap-2">
     <h2 class="col-span-3 font-semibold text-gray-700 text-lg">{{isEditing ? 'Rediger' : 'Nytt'}} vedlikehold</h2>
     <div class="flex flex-col">
-      <label for="mechanic_id">Mekaniker</label>
+      <label for="peopleId">Mekaniker</label>
       <select 
-        v-model="maintenance.mechanic_id"
-        name="mechanic_id"
+        v-model="maintenance.peopleId"
+        name="peopleId"
         class="eit-input"
       >
         <option hidden disabled :value="null">Velg mekaniker</option>
@@ -13,10 +13,10 @@
       </select>
     </div>
     <div class="flex flex-col">
-      <label for="timestamp">Tidsstempel</label>
+      <label for="date">Tidsstempel</label>
       <input 
-        v-model="maintenance.timestamp"
-        type="datetime-local" name="timestamp"
+        v-model="maintenance.date"
+        type="datetime-local" name="date"
         class="eit-input"
       />
     </div>
@@ -29,11 +29,11 @@
       />
     </div>
     <div class="flex flex-col col-span-3" :title="maintenance.preventive ? 'Sviktmodus er ikke relevant på forebyggende vedlikehold.' : ''">
-      <label for="fault_mode" :class="maintenance.preventive ? 'text-gray-500' : ''">Sviktmodus</label>
+      <label for="faultMode" :class="maintenance.preventive ? 'text-gray-500' : ''">Sviktmodus</label>
       <select 
-        v-model="maintenance.fault_mode"
+        v-model="maintenance.faultMode"
         :disabled="maintenance.preventive"
-        name="fault_mode"
+        name="faultMode"
         class="eit-input"
       >
         <option :value="null">Ingen</option>
@@ -105,8 +105,8 @@ export default {
       deep: true,
       handler(newVal) {
         this.$emit('input', newVal)
-        if(newVal.preventive && newVal.fault_mode !== null) {
-          this.maintenance.fault_mode = null
+        if(newVal.preventive && newVal.faultMode !== null) {
+          this.maintenance.faultMode = null
         }
       }
     },

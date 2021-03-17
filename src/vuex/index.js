@@ -3,8 +3,6 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import database from '../database'
-
 export default new Vuex.Store({
   state: {
     turbines: [],
@@ -26,35 +24,61 @@ export default new Vuex.Store({
   },
 
   actions: {
-    initialFetch({commit}) {
-      // await fetch(...) 
-      commit('SET_TURBINES', database.turbines)
-      commit('SET_MECHANICS', database.mechanics)
-      commit('SET_MAINTENANCES', database.maintenances)
-    },
+    async initialFetch({commit}) {
+      const turbineResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getWindmill')
+      const turbines = await turbineResponse.json()
+      commit('SET_TURBINES', turbines)
 
+      const mechanicResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getPerson')
+      const mechanics = await mechanicResponse.json()
+      commit('SET_MECHANICS', mechanics)
+      
+      
+      const maintenanceResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getMaintanance')
+      const maintenances = await maintenanceResponse.json()
+      commit('SET_MAINTENANCES', maintenances)
+    },
+    
     addMechanic({commit, getters}, mechanic) {
       // await fetch(...) 
       const id = Math.max(...getters.getMechanics.map(mech => mech.id)) + 1
       commit('SET_MECHANICS', [...getters.getMechanics, { ...mechanic, id }])
     },
 
-    addMaintenance({commit, getters}, maintenance) {
-      // await fetch(...) 
-      const id = Math.max(...getters.getMaintenances.map(maint => maint.id)) + 1
-      commit('SET_MAINTENANCES', [...getters.getMaintenances, { ...maintenance, id }])
+    async addMaintenance({commit, getters}, maintenance) {
+      delete maintenance.id
+      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/createMaintanance', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(maintenance) 
+      })
+      if(response.ok) {
+        maintenance = await response.json()
+
+        commit('SET_MAINTENANCES', [...getters.getMaintenances, maintenance ])
+      }
     },
-    updateMaintenance({commit, getters}, maintenance) {
-      // await fetch(...) 
-      const maintenances = [
-        ...getters.getMaintenances.filter(maint => maint.id !== maintenance.id),
-        maintenance,
-      ]
-      commit('SET_MAINTENANCES', maintenances)
+    async updateMaintenance({commit, getters}, maintenance) {
+      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/updateMaintanance', { 
+        method: 'PUT', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(maintenance) 
+      })
+
+      if(response.ok) {
+        const maintenances = [
+          ...getters.getMaintenances.filter(maint => maint.id !== maintenance.id),
+          maintenance,
+        ]
+        commit('SET_MAINTENANCES', maintenances)
+      }
     },
-    removeMaintenance({commit, getters}, maintenance) {
-      // await fetch(...)
-      commit('SET_MAINTENANCES', getters.getMaintenances.filter(maint => maint.id !== maintenance.id))
+    async removeMaintenance({commit, getters}, maintenance) {
+      const id = maintenance.id
+      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/removeMaintanance/' + id, { method: 'DELETE' })
+      if(response.ok) {
+        commit('SET_MAINTENANCES', getters.getMaintenances.filter(maint => maint.id !== maintenance.id))
+      }
     }
 
   },
