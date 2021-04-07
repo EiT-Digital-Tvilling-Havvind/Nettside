@@ -32,7 +32,12 @@ export default {
     // this.renderChart(this.chartDatas, { 
       responsive: true, 
       maintainAspectRatio: false, 
-      scales: { yAxes: [{ ticks: { stepSize: 1, } }] },
+      scales: { 
+        yAxes: [{ ticks: { stepSize: 1, } }], 
+        xAxes: [{ ticks: { maxRotation: 90, minRotation: 90 } }], 
+      },
+      legend: { display: false, },
+      elements: { point: { radius: 0, hitRadius: 2, } },
       ...this.options, 
     })
   },

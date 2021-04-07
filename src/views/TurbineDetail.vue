@@ -55,7 +55,7 @@
           <div class="flex-1">
             <h3 class="text-xl mb-4">Annen informasjon</h3>
             <div 
-              v-for="[key, value] in Object.entries(turbine.windmilldata)"
+              v-for="[key, value] in Object.entries(JSON.parse(turbine.windmilldata))"
               :key="key + value"
               class="flex justify-between"
             >
@@ -72,6 +72,7 @@
           v-for="(chartData, idx) in chartDatas"
           :key="idx"
         >
+          <h4 class="font-semibold text-gray-600 mb-2 text-center">{{chartData.title}}</h4>
           <LineGraph
             class="h-40 w-full"
             :chartData="chartData"
@@ -142,14 +143,16 @@ export default {
       return this.maintenances.filter(mt => new Date(mt.date) <= new Date())
     },
     chartDatas() {
-      return !this.turbine.graphs ? null : this.turbine.graphs.map(graphData => ({
+      return !this.turbine.graphs ? null : JSON.parse(this.turbine.graphs).map(graphData => ({
         title: graphData.title,
-        labels: graphData.data[0],
+        labels: graphData.data[0].map(label => label.slice(-8)),
         datasets: [{
           label: graphData.title,
-          data: graphData.data[1],
+          data: graphData.data[1].map(dataPoint => Number.parseFloat((dataPoint).toFixed(2))),
+          borderWidth: 1,
           borderColor: '#3388ff',
           backgroundColor: '#3388ff66',
+          lineTension: 0,
         }]
       }))
     }
