@@ -17,7 +17,7 @@
           (Effekt: {{turbine.effect_mw || 0}} MW)
         </h3>
       </div>
-      <hr class="border-gray-200 my-4">
+      <hr class="border-gray-200 border my-4">
 
       <!-- VEDLIKEHOLD -->
       <div class="flex justify-between">
@@ -42,15 +42,28 @@
         />
       </div>
 
-      <hr class="border-gray-200 my-4">
+      <hr class="border-gray-200 border my-4">
 
-
-      <!-- KORROSJON -->
       <div class="flex justify-between">
-        <h3 class="text-xl">Korrosjon i skvalpsona</h3>
-      </div>
-      <div class="my-4">
-        <CorrosionModel :upper="turbine.splashZoneUpper" :lower="turbine.splashZoneLower"/>
+        <!-- KORROSJON -->
+        <div class="flex-1">
+          <h3 class="text-xl mb-4">Korrosjon i skvalpsona</h3>
+          <CorrosionModel :upper="turbine.splashZoneUpper" :lower="turbine.splashZoneLower"/>
+        </div>
+        <div class="flex justify-start flex-1" v-if="turbine.windmilldata">
+          <hr class="border-gray-200 border w-px h-full inline-block m-4">
+          <div class="flex-1">
+            <h3 class="text-xl mb-4">Annen informasjon</h3>
+            <div 
+              v-for="[key, value] in Object.entries(turbine.windmilldata)"
+              :key="key + value"
+              class="flex justify-between"
+            >
+              <p class="text-gray-600 font-semibold">{{key}}</p>
+              <p>{{value}}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
 
