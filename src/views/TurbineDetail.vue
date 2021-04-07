@@ -66,7 +66,18 @@
         </div>
       </div>
 
-
+      <div v-if="chartDatas">
+        <hr class="border-gray-200 border my-4">
+        <div
+          v-for="(chartData, idx) in chartDatas"
+          :key="idx"
+        >
+          <LineGraph
+            class="h-40 w-full"
+            :chartData="chartData"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- VEDLIKEHOLD REDIGERING -->
@@ -87,9 +98,10 @@ import { mapActions, mapGetters } from 'vuex'
 import MaintenanceTable from './MaintenanceTable.vue'
 import MaintenanceForm from './MaintenanceForm.vue'
 import CorrosionModel from '../components/CorrosionModel'
+import LineGraph from '../components/LineGraph.vue'
 
 export default {
-  components: { Modal, MaintenanceTable, MaintenanceForm, CorrosionModel, },
+  components: { Modal, MaintenanceTable, MaintenanceForm, CorrosionModel, LineGraph},
   props: {
     turbineId: {
       type: Number,
@@ -129,6 +141,18 @@ export default {
     completedMaintenances() {
       return this.maintenances.filter(mt => new Date(mt.date) <= new Date())
     },
+    chartDatas() {
+      return !this.turbine.graphs ? null : this.turbine.graphs.map(graphData => ({
+        title: graphData.title,
+        labels: graphData.data[0],
+        datasets: [{
+          label: graphData.title,
+          data: graphData.data[1],
+          borderColor: '#3388ff',
+          backgroundColor: '#3388ff66',
+        }]
+      }))
+    }
   },
   methods: {
     ...mapActions([ 'updateMaintenance', 'addMaintenance', 'removeMaintenance' ]),
