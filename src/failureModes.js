@@ -1,12 +1,12 @@
 //failure-modes
 export default [ 
   {
-    name: 'Rotor (Hub)',
+    name: 'Rotor (nav)',
     id: 'rotor',
     modes: [
       {
         id: 'rotor.aero_asym',
-        title: 'Aerodynamic asymmetry',
+        title: 'Aerodynamisk asymmetri',
       },
       {
         id: 'rotor.yaw_mis',
@@ -14,315 +14,315 @@ export default [
       },
       {
         id: 'rotor.creep_corr',
-        title: 'Creep and corrosion fatigue',
+        title: 'Siging og korrosjonsutmattelse',
       },
       {
         id: 'rotor.non_uni_air',
-        title: 'Non-uniform air gap (bearings)',
+        title: 'Ujevnt luftgap (kulelager)',
       },
       {
         id: 'rotor.hub_spin',
-        title: 'Hub spinning on shaft',
+        title: 'Nav spinner på akslingen',
       },
       {
         id: 'rotor.shaft_mis',
-        title: 'Shaft misalignment',
+        title: 'Feiljustering av aksling',
       },
       {
         id: 'rotor.tors_osci',
-        title: 'Torsional oscillation',
+        title: 'Torsjonsoscillasjon',
       },
       {
         id: 'rotor.devi_tor_spd',
-        title: 'Deviation in the torque-speed ratio',
+        title: 'Avvik i dreiemoment-hastighetsforholdet',
       },
       {
         id: 'rotor.mass_imbal',
-        title: 'Mass imbalance',
+        title: 'Masse i ubalanse',
       },
     ]
   },
   {
-    name: 'Pitch control',
+    name: 'Stigningsvinkelkontroll',
     id: 'pitch',
     modes: [
       {
         id: 'pitch.prem_brake',
-        title: 'Premature brake activation',
+        title: 'For tidlig bremseaktivering',
       },
       {
         id: 'pitch.exce_load_mit',
-        title: 'Inability of excessive operational load mitigation',
+        title: 'Manglende evne til overdreven belastningsreduksjon',
       },
       {
         id: 'pitch.hydr_sys_fail',
-        title: 'Operation instability due to hydraulic system failure',
+        title: 'Ustabil drift på grunn av svikt i hydraulikksystemet',
       },
       {
         id: 'pitch.air_contam_hydr',
-        title: 'Air contamination in the hydraulic system',
+        title: 'Luftforurensning i det hydrauliske systemet',
       },
       {
         id: 'pitch.inab_aero_brak',
-        title: 'Inability of aerodynamic braking',
+        title: 'Manglende evne til aerodynamisk bremsing',
       },
       {
         id: 'pitch.hydr_fluid_red',
-        title: 'Hydraulic fluid bulk modulus reduction',
+        title: 'Reduksjon av  kompresjonmotstandsevne for hydraulisk fluid',
       },
       {
         id: 'pitch.leak_hydr_sys',
-        title: 'Leakage in the hydraulic system',
+        title: 'Lekkasje i hydraulikksystemet',
       },
       {
         id: 'pitch.asym_pitch',
-        title: 'Asymmetry in pitch angle',
+        title: 'Asymmetri i stigningsvinkel',
       },
     ]
   },
   {
-    name: 'Power electronics and electric controls',
+    name: 'Kraftelektronikk og elektriske kontroller',
     id: 'power',
     modes: [
       {
         id: 'power.semi_dev_def',
-        title: 'Semiconductor devices defects',
+        title: 'Defekter i halvledere',
       },
       {
         id: 'power.open_3ph_pow',
-        title: 'Open circuit failure in 3-phase power converter',
+        title: 'Brudd i 3-fase strømomformer',
       },
       {
         id: 'power.short_3ph_pow',
-        title: 'Short circuit failure in 3-phase power converter',
+        title: 'Kortslutning i 3-faset strømomformer',
       },
       {
         id: 'power.gate_drv_3ph_pow',
-        title: 'Gate-drive circuit failure in 3-phase power converter',
+        title: 'Port-driverfeil i 3-fase strømomformer',
       },
       {
         id: 'power.overheat',
-        title: 'Overheating',
+        title: 'Overoppheting',
       },
       {
         id: 'power.err_wind_meas',
-        title: 'Error in wind speed/direction measurement',
+        title: 'Feil i måling av vindhastighet/-retning',
       },
     ]
   },
   {
-    name: 'Blades',
+    name: 'Vindmølleblader',
     id: 'blades',
     modes: [
       {
         id: 'blades.cracks',
-        title: 'Cracks',
+        title: 'Sprekker',
       },
       {
         id: 'blades.delam_comp',
-        title: 'Delaminations of the composite',
+        title: 'Delamineringer av kompositten',
       },
       {
         id: 'blades.surf_wear',
-        title: 'Surface wear',
+        title: 'Overflateslitasje',
       },
       {
         id: 'blades.incr_rough',
-        title: 'Increased surface roughness',
+        title: 'Økende overflateruhet',
       },
       {
         id: 'blades.fatigue',
-        title: 'Fatigue',
+        title: 'Utmattelse',
       },
       {
         id: 'blades.lightning',
-        title: 'Lightning strikes',
+        title: 'Lynnedslag',
       },
       {
         id: 'blades.high_vibr',
-        title: 'High vibrations',
+        title: 'Høyfrekvent vibrasjon',
       },
       {
         id: 'blades.flap_fatigue',
-        title: 'Flapwise fatigue damage',
+        title: 'Flappvis utmattelsesskade',
       },
       {
         id: 'blades.unst_air',
-        title: 'Unsteady blades air loads',
+        title: 'Ubalanserte vindmølleblad',
       },
       {
         id: 'blades.fracture',
-        title: 'Blade fracture',
+        title: 'Brudd på vindmølleblad ',
       },
       {
         id: 'blades.unst_perf',
-        title: 'Unsteady performance',
+        title: 'Ujevn ytelse',
       },
       {
         id: 'blades.corrosion',
-        title: 'Corrosion',
+        title: 'Korrosjon',
       },
     ]
   },
   {
-    name: 'Gearbox (bearings and gears)',
+    name: 'Girkasse (kulelager og gir)',
     id: 'gearbox',
     modes: [
       {
         id: 'gearbox.gear_tooth_dam',
-        title: 'Gear tooth damage',
+        title: 'Overflateskader på tannhjul',
       },
       {
         id: 'gearbox.pitting',
-        title: 'Pitting',
+        title: 'Grop korrosjon',
       },
       {
         id: 'gearbox.cracking',
-        title: 'Cracking',
+        title: 'Brudd',
       },
       {
         id: 'gearbox.gear_ecce',
-        title: 'Gear eccentricity',
+        title: 'Eksentrisitet for gir',
       },
       {
         id: 'gearbox.tooth_crack',
-        title: 'Tooth crack',
+        title: 'Knekt tann på tannhjul',
       },
       {
         id: 'gearbox.shaft_gear_fail',
-        title: 'Shaft-Gearbox coupling failure',
+        title: 'Koblingsfeil mellom hovedaksling og girboks',
       },
       {
         id: 'gearbox.scratching',
-        title: 'Scratching (abrasive wear)',
+        title: 'Riper',
       },
       {
         id: 'gearbox.scoring',
-        title: 'Scoring (adhesive wear)',
+        title: 'Riper (klister-skader)',
       },
       {
         id: 'gearbox.lub_visc_change',
-        title: 'Lubricant viscosity changes',
+        title: 'Viskositetsendring i smøremiddel',
       },
       {
         id: 'gearbox.lub_loss_water_cont',
-        title: 'Lubricant loss of water content',
+        title: 'Vanntap i smøremiddel',
       },
       {
         id: 'gearbox.add_deb_lub',
-        title: 'Presence of additives/debris in the lubricant',
+        title: 'Tilsetningsstoffer/rusk i smøremidlet',
       },
     ]
   },
   {
-    name: 'Generator (Bearing Stator and Rotor)',
+    name: 'Generator (kulelager, stator og rotor)',
     id: 'generator',
     modes: [
       {
         id: 'generator.inter_short',
-        title: 'Inter turn short circuit',
+        title: 'Sving-til-sving kortslutning',
       },
       {
         id: 'generator.abn_conn_stator',
-        title: 'Abnormal connection of the stator winding',
+        title: 'Unormal tilkobling av statorviklingen',
       },
       {
         id: 'generator.dyn_ecc',
-        title: 'Dynamic eccentricity',
+        title: 'Dynamisk eksentrisitet',
       },
       {
         id: 'generator.open_short_stator_rotor',
-        title: 'Opening or shorting of stator or rotor winding circuits',
+        title: 'Brudd eller kortslutning i stator- eller rotorviklinger',
       },
       {
         id: 'generator.rotor_ecc',
-        title: 'Rotor eccentricity',
+        title: 'Rotoreksentrisitet',
       },
       {
         id: 'generator.rotor_brok_bar',
-        title: 'Rotor broken bar',
+        title: 'Skade på rotorstav',
       },
       {
         id: 'generator.rotor_crack_end',
-        title: 'Rotor cracked end-ring',
+        title: 'Sprukket slutt-ring på rotor',
       },
       {
         id: 'generator.torque_red',
-        title: 'Torque reduction',
+        title: 'Reduksjon av dreiemoment',
       },
       {
         id: 'generator.exce_stress',
-        title: 'Excessive stresses during operation',
+        title: 'Overveldende belastning under drift',
       },
       {
         id: 'generator.air_gap_ecce',
-        title: 'Static and/or dynamic air gap eccentricities',
+        title: 'Statisk og/eller dynamisk luftgap eksentrisitet',
       },
       {
         id: 'generator.incr_trq_puls',
-        title: 'Increased torque pulsation',
+        title: 'Økt dreiemomentpulsering',
       },
       {
         id: 'generator.exce_heat_wind',
-        title: 'Excessive heating in the winding',
+        title: 'Overdreven oppvarming i viklingen',
       },
       {
         id: 'generator.incr_loss_eff_red',
-        title: 'Increase in losses and efficiency reduction',
+        title: 'Økning i tap og effektivitetsreduksjon',
       },
       {
         id: 'generator.rotor_misa',
-        title: 'Rotor misalignment',
+        title: 'Feiljustering av rotor',
       },
       {
         id: 'generator.imb_harm_air_flux',
-        title: 'Imbalances and harmonics in the air gap flux',
+        title: 'Ubalanse og harmonisk i luft-rom fluksen',
       },
       {
         id: 'generator.short_wind_coil',
-        title: 'Shorted winding coil (reduction in generator reactance)',
+        title: 'Reduksjon i viklinger på spole (reduksjon av reaktans for generator)',
       },
     ]
   },
   {
-    name: 'Tower and Foundation',
+    name: 'Tårn og fundament',
     id: 'tower_foundation',
     modes: [
       {
         id: 'tower_foundation.fatigue',
-        title: 'Fatigue',
+        title: 'Utmatting',
       },
       {
         id: 'tower_foundation.cracks',
-        title: 'Cracks',
+        title: 'Brudd',
       },
       {
         id: 'tower_foundation.corro',
-        title: 'Corrosion',
+        title: 'Korrosjon',
       },
       {
         id: 'tower_foundation.exce_foul_found',
-        title: 'Excessive fouling of foundation',
+        title: 'Overveldende begroing på fundamentet',
       },
       {
         id: 'tower_foundation.loss_cap_found_cycl',
-        title: 'Loss of capacity in foundation due to cyclic loading',
+        title: 'Funksjonstap i fundament på grunn av syklisk belastning',
       },
       {
         id: 'tower_foundation.soil_instab',
-        title: 'Soil instability',
+        title: 'Ustabilitet i jord',
       },
       {
         id: 'tower_foundation.earthq',
-        title: 'Earthquakes',
+        title: 'Jordskjelv',
       },
       {
         id: 'tower_foundation.change_modal_cycl',
-        title: 'Change of modal parameters due to cyclic loading',
+        title: 'Endring av modalparametere på grunn av syklisk belastning',
       },
       {
         id: 'tower_foundation.scour',
-        title: 'Scour',
+        title: 'Jord-fjerning på sugeankeret til vindmøllen',
       },
     ]
   },
