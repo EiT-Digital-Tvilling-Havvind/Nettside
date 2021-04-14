@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const baseURL = 'https://eit-backend.azurewebsites.net/home/getWindmill'
+const baseURL = 'https://eit-backend.azurewebsites.net/'
 
 export default new Vuex.Store({
   state: {
