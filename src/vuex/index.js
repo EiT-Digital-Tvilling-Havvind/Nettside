@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const baseURL = 'https://eit-backend.azurewebsites.net/home/getWindmill'
+
 export default new Vuex.Store({
   state: {
     turbines: [],
@@ -25,16 +27,16 @@ export default new Vuex.Store({
 
   actions: {
     async initialFetch({commit}) {
-      const turbineResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getWindmill')
+      const turbineResponse = await fetch(`${baseURL}/home/getWindmill`)
       const turbines = await turbineResponse.json()
       commit('SET_TURBINES', turbines)
 
-      const mechanicResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getPerson')
+      const mechanicResponse = await fetch(`${baseURL}/home/getPerson`)
       const mechanics = await mechanicResponse.json()
       commit('SET_MECHANICS', mechanics)
       
       
-      const maintenanceResponse = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/getMaintanance')
+      const maintenanceResponse = await fetch(`${baseURL}/home/getMaintanance`)
       const maintenances = await maintenanceResponse.json()
       commit('SET_MAINTENANCES', maintenances)
     },
@@ -47,7 +49,7 @@ export default new Vuex.Store({
 
     async addMaintenance({commit, getters}, maintenance) {
       delete maintenance.id
-      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/createMaintanance', { 
+      const response = await fetch(`${baseURL}/home/createMaintanance`, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify(maintenance) 
@@ -59,7 +61,7 @@ export default new Vuex.Store({
       }
     },
     async updateMaintenance({commit, getters}, maintenance) {
-      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/updateMaintanance', { 
+      const response = await fetch(`${baseURL}/home/updateMaintanance`, { 
         method: 'PUT', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify(maintenance) 
@@ -75,7 +77,7 @@ export default new Vuex.Store({
     },
     async removeMaintenance({commit, getters}, maintenance) {
       const id = maintenance.id
-      const response = await fetch('https://eit-backend20210303144131.azurewebsites.net/home/removeMaintanance/' + id, { method: 'DELETE' })
+      const response = await fetch(`${baseURL}/home/removeMaintanance/${id}`, { method: 'DELETE' })
       if(response.ok) {
         commit('SET_MAINTENANCES', getters.getMaintenances.filter(maint => maint.id !== maintenance.id))
       }
