@@ -30,14 +30,18 @@
 export default {
   components: {},
   props: {
-    upper: {
-      required: false,
-      default: '- ',
-    },
-    lower: {
-      required: false,
-      default: '- ',
-    }
+    // upper: {
+    //   required: false,
+    //   default: '- ',
+    // },
+    // lower: {
+    //   required: false,
+    //   default: '- ',
+    // }
   },
+  data: () => ({
+    upper: 112,
+    lower: 53,
+  }),
 }
 </script>
